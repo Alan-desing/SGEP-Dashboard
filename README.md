@@ -1,6 +1,6 @@
 # Sistema de Gestión de Encuestas para la Evaluación de Proyectos
 
-**SGEP-Dashboard** permite administrar proyectos, construir y distribuir encuestas, centralizar respuestas y consultar métricas para el seguimiento de proyectos de 7mo.
+**SGEP-Dashboard** permite administrar proyectos y construir y distribuir encuestas.
 
 ## Objetivo
 
@@ -8,21 +8,21 @@ El sistema reemplaza planillas dispersas y formularios aislados por un espacio c
 
 ## Funcionalidades
 
-- Alta, consulta y edición de proyectos con estado, cliente, avance, cumplimiento y responsables.
-- Cuentas con roles Administrador, Responsable de proyecto y Auditor.
+- Consulta y edición de proyectos con estado, cliente, avance, cumplimiento y responsables.
+- Distintos roles de usuario.
 - Constructor de encuestas con reordenamiento drag & drop, preguntas obligatorias, opciones y reglas condicionales.
 - Plantillas reutilizables de satisfacción, avance y lecciones aprendidas.
 - Encuestas anónimas o identificadas, públicas o restringidas.
 - Enlace único por encuesta, QR, invitaciones por correo y recordatorios programados.
 - Respuestas públicas sin registro. Cada participación distingue `registrado` y conserva el anonimato configurado.
-- Dashboard con NPS, avance percibido, cumplimiento, participación, filtros, gráficos, mapa de calor y semáforo de riesgo.
+- Dashboard con avance percibido, cumplimiento, participación, filtros, gráficos, mapa de calor y semáforo de riesgo.
 - Resultados por pregunta, distribuciones, filtros por fecha y detalle de participaciones.
 - Exportación compatible con Excel en CSV y reportes para imprimir o guardar como PDF.
 - Datos de demostración para que el dashboard tenga información al importar la base.
 
 ## Tecnologías
 
-- **HTML, CSS y Bootstrap 5:** pantallas responsive.
+- **HTML, CSS y Bootstrap 5:** diseño responsive.
 - **JavaScript:** interacción, constructor drag & drop, gráficos, QR y llamadas `fetch`.
 - **PHP 8.1 o superior:** sesiones, API REST, reglas de negocio y exportaciones.
 - **MySQL 8.0.16 o superior:** almacenamiento relacional, JSON, claves foráneas e índices.
@@ -46,7 +46,7 @@ El sistema reemplaza planillas dispersas y formularios aislados por un espacio c
 6. Si tu instalación usa otras credenciales, actualizá `host`, `port`, `database`, `username` y `password` en ese archivo. También podés establecer las variables de entorno `SGEP_DB_HOST`, `SGEP_DB_PORT`, `SGEP_DB_NAME`, `SGEP_DB_USER` y `SGEP_DB_PASSWORD`.
 7. Abrí **`http://localhost/SGEP-Dashboard/public/`**.
 
-El directorio `public/` es la raíz web. En un servidor compartido, configurá Apache para que apunte allí y evitá publicar `config/`, `app/`, `database/` o `scripts/`.
+El directorio `public/` es la raíz web.
 
 ## Configuración de correo y enlaces
 
@@ -57,8 +57,6 @@ En `config/app.php` podés ajustar:
 - `timezone`: zona horaria de fechas y recordatorios.
 
 También se aceptan las variables de entorno `SGEP_BASE_URL`, `SGEP_MAIL_FROM` y `SGEP_TIMEZONE`.
-
-Las invitaciones se envían inmediatamente con `mail()`. Si la configuración local no puede entregar correo, la invitación queda marcada con error y se puede volver a intentar. Los recordatorios quedan guardados en MySQL; para enviarlos, configurá una tarea programada que ejecute desde la carpeta del proyecto:
 
 ```text
 php scripts/send_reminders.php
@@ -115,14 +113,6 @@ SGEP-Dashboard/
 │   └── survey.php        Respuesta pública de encuesta
 └── scripts/             Tareas de envío programado de recordatorios
 ```
-
-## Datos y criterios del modelo
-
-El esquema conserva las entidades `usuario`, `proyecto`, `encuesta`, `pregunta`, `respuesta` y `visitas` del diagrama. `proyecto_responsable` resuelve la relación de responsables; `plantilla`, `participacion`, `invitacion` y `recordatorio` completan los requisitos de distribución, plantillas y agrupación de respuestas.
-
-En el diagrama original, `respuesta` apuntaba a una pregunta individual, pero no permitía agrupar las respuestas de una misma encuesta completada. `participacion` agrupa esas filas; cada fila de `respuesta` continúa vinculada a su pregunta e incluye `title`, `datos`, `anonimo`, `registrado` y fecha. Las claves primarias son `AUTO_INCREMENT` y las relaciones se implementan con claves foráneas.
-
-La relación usuario–proyecto del diagrama no especificaba cardinalidad o atributos de asignación. Se implementa como una relación muchos a muchos mediante `proyecto_responsable`, que permite varios responsables por proyecto.
 
 ## Limitaciones operativas
 
